@@ -15,12 +15,15 @@ namespace CenturyAsia
 {
     public class Room
     {
-        public Room(int id)
+        public Room(int id, int 差幾張 = 2)
         {
             Id = id;
+            this.差幾張 = 差幾張;
         }
 
         public int Id { get; set; }
+
+        public int 差幾張 { get; set; }
 
         public Dictionary<string, List<DateTime>> TimeTable { get; set; } = new Dictionary<string, List<DateTime>>();
     }
@@ -35,6 +38,9 @@ namespace CenturyAsia
         public Dictionary<int, List<DateTime>> Times { get; set; } = new Dictionary<int, List<DateTime>>();
     }
 
+    /// <summary>
+    /// 以廳為主的模型，主要儲存每一廳播放的電影及時刻
+    /// </summary>
     public class MovieTimeList
     {
         public List<TimeListModel> TimeList { get; set; }
@@ -45,6 +51,9 @@ namespace CenturyAsia
             .Replace("廳", "").Replace(" ", "");
     }
 
+    /// <summary>
+    /// 時刻模型
+    /// </summary>
     public class TimeListModel
     {
         public DateTime Date { get; set; }
@@ -74,8 +83,8 @@ namespace CenturyAsia
         {
             NeedRooms = new List<Room>()
             {
-                new Room(4),new Room(7),new Room(11),
-                new Room(12),new Room(18),new Room(20)
+                new Room(4),new Room(7,1),new Room(11),
+                new Room(12),new Room(18,1),new Room(20,1)
             };
 
             var ids = MemoryCache.Default.Get("ids") as List<Movie> ?? GetMovies();

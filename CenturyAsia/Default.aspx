@@ -14,6 +14,7 @@
     <table border="1">
         <caption><%=date.ToString("MM/dd") %></caption>
         <tr>
+            <th>差幾張</th>
             <th>廳</th>
             <th>Data</th>
         </tr>
@@ -23,6 +24,7 @@
             {
         %>
         <tr>
+            <td><%=room.差幾張 %></td>
             <td><%=room.Id%></td>
             <td>
                 <table border="1">
