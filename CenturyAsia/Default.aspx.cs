@@ -1,15 +1,14 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
-using System.Web;
+using System.Runtime.Caching;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Runtime.Caching;
-using System.Collections.Specialized;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace CenturyAsia
 {
@@ -84,7 +83,7 @@ namespace CenturyAsia
             NeedRooms = new List<Room>()
             {
                 new Room(4),new Room(7,1),new Room(11),
-                new Room(12),new Room(18,1),new Room(20,1)
+                new Room(18,1),new Room(20,1)
             };
 
             var ids = MemoryCache.Default.Get("ids") as List<Movie> ?? GetMovies();
@@ -157,7 +156,8 @@ namespace CenturyAsia
                 movies = movies.Concat(m).ToList();
             }
 
-            var policy = new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.AddDays(1) };
+            var x = (int)DateTime.Now.DayOfWeek % 7;
+            var policy = new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.AddDays(3) };
 
             MemoryCache.Default.Add("ids", movies, policy);
 
@@ -166,6 +166,12 @@ namespace CenturyAsia
 
         public List<MovieTimeList> GetTimeTable(string id, DateTime date)
         {
+            var key = $"{id}_{date.ToShortDateString()}";
+            if (MemoryCache.Default.Get(key) != null)
+            {
+                return (List<MovieTimeList>)MemoryCache.Default.Get(key);
+            }
+
             WebClient client = new WebClient() { Encoding = System.Text.Encoding.UTF8 };
             NameValueCollection nv = new NameValueCollection();
             nv.Add("date", date.ToString("yyyy/MM/dd"));
@@ -178,6 +184,8 @@ namespace CenturyAsia
             {
                 t.TimeList.ForEach(ti => ti.Date = date);
             });
+            var policy = new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.AddDays(3) };
+            MemoryCache.Default.Add(key, timeLists, policy);
             return timeLists;
         }
     }
