@@ -82,7 +82,7 @@ namespace CenturyAsia
         {
             NeedRooms = new List<Room>()
             {
-                new Room(4),new Room(7,1),new Room(11),
+                new Room(4),new Room(7,1),/*new Room(11),*/
                 new Room(18,1),new Room(20,1)
             };
 
